@@ -3,7 +3,8 @@
     'name': "project_update",
 
     'summary': """
-        Texto molon""",
+        Texto molon
+        """,
 
     'description': """
         Long description of module's purpose
