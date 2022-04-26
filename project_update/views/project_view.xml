@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- Inherit Form View to Modify it -->
+        <!-- Record to modify fields from project main screen -->
         <record id="edit_project_sprint_management" model="ir.ui.view">
             <field name="name">project.project.form.updateTemplate</field>
             <field name="model">project.project</field>
@@ -13,10 +13,7 @@
                 </field>
 
                 <xpath expr="//button[@name='attachment_tree_view']" position="after">
-                    <button type="object"
-                        class="oe_stat_button"
-                        icon="fa-calendar-times-o"
-                        string="Sprints">
+                    <button type="action" name="sprintAction" class="oe_stat_button" icon="fa-calendar-times-o" string="Sprints">
                     </button>
                 </xpath>
                 <xpath expr="//button[@name='action_view_all_rating']" position="after">
@@ -34,5 +31,49 @@
                 </xpath>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="sprint_kanban">
+            <field name="name">project.sprint.kanban</field>
+            <field name="model">project.sprint</field>
+            <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <field name="image"/>
+                <field name="candidat_name"/>
+                <field name="candidat_age"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <t t-if="record.image.raw_value">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('recrutement.touscandidats', 'image', record.id.raw_value)" alt="recrutement" class="o_image_64_contain"/>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <img class="o_kanban_image" t-att-src="_s +/hr/static/src/img/default_image.png" alt="Default"/>
+                            </t>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="display_name"/>
+                                </strong>
+                                <div class="o_kanban_tags_section"/>
+                                <ul>
+                                 <li>
+                                     Nom:
+                                     <field name="candidat_name"/>
+                                 </li>
+                                 <li>
+                                     Age :
+                                     <field name="candidat_age"/>
+                                 </li>
+                             </ul>
+                         </div>
+                     </div>
+                 </t>
+             </templates>
+         </kanban>
+     </field>
+ </record>
+
     </data>
 </odoo>

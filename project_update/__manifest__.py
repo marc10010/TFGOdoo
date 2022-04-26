@@ -3,11 +3,11 @@
     'name': "project_update",
 
     'summary': """
-        Texto molon
+        Texto molon de verdad
         """,
 
     'description': """
-        Long description of module's purpose
+        Esto es una extension para el modulo de proyectos
     """,
 
     'author': "Marc Cortadellas",
@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['project'],
+    'depends': ['project', 'base'],
 
     # always loaded
     'data': [
