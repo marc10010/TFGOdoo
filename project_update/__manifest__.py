@@ -25,5 +25,6 @@
     # always loaded
     'data': [
         'views/project_view.xml',
+        'security/ir.model.access.csv',
     ],
 }
