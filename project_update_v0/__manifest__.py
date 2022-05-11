@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "project_update",
+    'name': "project_update_V0",
 
     'summary': """
         Texto molon de verdad
@@ -20,12 +20,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','project'],
+    'depends': ['project', 'base'],
 
     # always loaded
     'data': [
+        'views/project_view.xml',
         'security/ir.model.access.csv',
-        'views/project_project_view.xml',
-        'views/project_sprint_view.xml',
     ],
 }
