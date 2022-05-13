@@ -27,7 +27,7 @@ class ProjectSprint(models.Model):
     sprint_name = fields.Char(placeholder='Name', index=True, required=True, tracking=True)
 
     project_id = fields.Many2one('project.project', string='Project', default=lambda self: self.env.context.get('active_id'),
-        index=True, tracking=True, check_company=True, change_default=True)
+        index=True, tracking=True, check_company=True, change_default=True, readonly=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
 
     fecha_inicio = fields.Date(string='Fecha Inicio', index=True, copy=False, tracking=True)
@@ -38,3 +38,28 @@ class ProjectSprint(models.Model):
     desarrollo_porcentage = fields.Integer(string="% Desarrollo")
     description = fields.Text(translate=True)
     candidat_age = fields.Integer(String="age")
+
+    stage_id = fields.Many2one('crm.stage', string='Stage', ondelete='restrict', tracking=True, index=True, copy=False)
+    task_count = fields.Integer(compute='_compute_task_count', string="Task Count")
+
+    def tareas_sprint(self):
+        ctx = dict(self.env.context or {})
+        action ={
+            'type': 'ir.actions.act_window',
+            'domain': [('sprint_id', 'in', self.ids)],
+            #'views': [(view_kanban_id, 'kanban')],
+            'view_mode': 'kanban,form',
+            'name': 'Tareas',
+            'res_model': 'project.task',
+            'context': ctx
+        }
+        return action
+
+    def _compute_task_count(self):
+        self.task_count = 1
+
+    def gantt_sprint(self):
+        return self
+
+    def burn_down_chart_sprint(self):
+        return self

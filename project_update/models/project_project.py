@@ -5,10 +5,10 @@ from odoo import fields, models
 class ProjectTemplate(models.Model):
     _inherit = 'project.project'
     backup = fields.Many2one('res.users', string='Backup', default=lambda self: self.env.user, tracking=True)
-    responsableTecnico = fields.Many2one('res.users', string='Responsable técnico', default=lambda self: self.env.user, tracking=True)
+    responsable_tecnico = fields.Many2one('res.users', string='Responsable técnico', default=lambda self: self.env.user, tracking=True)
     sprint_count = fields.Integer(string="Sprint Count")
 
-    def sprintAction(self):
+    def sprint_action(self):
         view_kanban_id = self.env.ref('project_update.sprint_kanban').id
         """ctx opcional"""
         ctx = dict(self.env.context or {})
