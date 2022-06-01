@@ -14,6 +14,14 @@
                     <field name="prioridad"/>
                     <field name="dependencia"/>
                 </field>
+
+                <field name="tag_ids" position="after">
+                    <field name="planned_hours"/>
+                    <field name="effective_hours"/>
+                    <field name="progress" string="Horas dedicadas (%)" widget ="percentage"/>
+                    <field name="horas_desarrolladas_pctg" widget ="percentage"/>
+                </field>
+
 <!--
 
                 <xpath expr="//button[@name='attachment_tree_view']" position="after">

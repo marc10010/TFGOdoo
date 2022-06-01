@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <data noupdate="1">
+        <record id="type_backlog" model="project.task.type">
+            <field name="name">Backlog_new</field>
+        </record>
+        <record id="type_inprogres" model="project.task.type">
+            <field name="name">In Progress</field>
+        </record>
+        <record id="type_client" model="project.task.type">
+            <field name="name">Pendiente Cliente</field>
+        </record>
+        <record id="type_develop" model="project.task.type">
+            <field name="name">Desarrollo</field>
+        </record>
+        <record id="type_validationpm" model="project.task.type">
+            <field name="name">Validación PM</field>
+        </record>
+        <record id="type_validationclient" model="project.task.type">
+            <field name="name">Validación Cliente</field>
+        </record>
+        <record id="type_completed" model="project.task.type">
+            <field name="name">Completado</field>
+        </record>
+        <record id="type_inprod" model="project.task.type">
+            <field name="name">En Producción</field>
+        </record>
+
+    </data>
+
+</odoo>

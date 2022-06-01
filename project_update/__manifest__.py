@@ -27,6 +27,7 @@
         'security/ir.model.access.csv',
         'views/project_project_view.xml',
         'views/project_sprint_view.xml',
-        'views/project_task_view.xml'
+        'views/project_task_view.xml',
+        'data/project_task_type_data.xml'
     ],
 }

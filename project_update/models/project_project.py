@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import fields, models
+from odoo import fields, models, api
 
 class ProjectTemplate(models.Model):
     _inherit = 'project.project'
@@ -22,3 +22,17 @@ class ProjectTemplate(models.Model):
             'context': ctx
         }
         return action
+
+    @api.model
+    def create(self, vals):
+        project = super(ProjectTemplate, self).create(vals)
+
+        project.type_ids = [(4, self.env.ref('project_update.type_backlog').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_inprogres').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_validationpm').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_develop').id)]
+
+#        if etapas:
+#            for etapa in etapas:
+#                project.type_ids = [(4, etapa.id)]
+        return project

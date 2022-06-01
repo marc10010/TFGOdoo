@@ -24,10 +24,12 @@ class ProjectSprint(models.Model):
         ('done', 'Green'),
         ('blocked', 'Red')], string='Kanban State',
         copy=False, default='normal', required=True)
+
     sprint_name = fields.Char(placeholder='Name', index=True, required=True, tracking=True)
 
     project_id = fields.Many2one('project.project', string='Project', default=lambda self: self.env.context.get('active_id'),
         index=True, tracking=True, check_company=True, change_default=True, readonly=True)
+
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
 
     fecha_inicio = fields.Date(string='Fecha Inicio', index=True, copy=False, tracking=True)

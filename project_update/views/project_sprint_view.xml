@@ -17,12 +17,12 @@
                                     <div class="o_kanban_tags_section"/>
                                     <ul>
                                         <li>
-                                        Nom:
-                                        <field name="sprint_name"/>
+                                        Fecha Incio:
+                                        <field name="fecha_inicio"/>
                                         </li>
                                         <li>
-                                        Age :
-                                        <field name="candidat_age"/>
+                                        Fecha Fin:
+                                        <field name="fecha_fin"/>
                                         </li>
                                     </ul>
                                 </div>
