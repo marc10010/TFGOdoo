@@ -27,6 +27,7 @@ class ProjectSprint(models.Model):
 
     sprint_name = fields.Char(placeholder='Name', index=True, required=True, tracking=True)
 
+
     project_id = fields.Many2one('project.project', string='Project', default=lambda self: self.env.context.get('active_id'),
         index=True, tracking=True, check_company=True, change_default=True, readonly=True)
 
@@ -45,12 +46,14 @@ class ProjectSprint(models.Model):
     task_count = fields.Integer(compute='_compute_task_count', string="Task Count")
 
     def tareas_sprint(self):
-        ctx = dict(self.env.context or {})
+        new_context = dict(self.env.context).copy()
+        new_context.update( { 'sprint_name' : self.id } )
+        ctx = dict(new_context or {})
         action ={
             'type': 'ir.actions.act_window',
-            'domain': [('sprint_id', 'in', self.ids)],
+            'domain': [ '&',('project_id', 'in', self.project_id.ids), '|', ('sprint', 'in', self.sprint_name),'&', ('stage_id', 'in', self.env.ref('project_update.type_backlog').ids), '|', ('sprint', 'in', self.sprint_name),('sprint', '=',False) ],
             #'views': [(view_kanban_id, 'kanban')],
-            'view_mode': 'kanban,form',
+            'view_mode': 'kanban,form,list',
             'name': 'Tareas',
             'res_model': 'project.task',
             'context': ctx
@@ -65,3 +68,12 @@ class ProjectSprint(models.Model):
 
     def burn_down_chart_sprint(self):
         return self
+
+    def read_all_stage_ids(self, stages, domain, order):
+        project_id = self._context.get('default_project_id')
+
+        search_domain = [('project_id', '=', project_id)]
+
+        # perform search
+        stage_ids = stages._search(search_domain)
+        return stages.browse(stage_ids)

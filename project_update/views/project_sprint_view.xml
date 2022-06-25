@@ -5,7 +5,7 @@
             <field name="name">project.sprint.kanban</field>
             <field name="model">project.sprint</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="stage_id" class="o_kanban_small_column o_opportunity_kanban" archivable="false">
+                <kanban default_group_by="stage_id" group_expand="read_all_stage_ids" class="o_kanban_small_column o_opportunity_kanban" archivable="false">
                     <field name="sprint_name"/>
                     <templates>
                         <t t-name="kanban-box">
@@ -24,6 +24,10 @@
                                         Fecha Fin:
                                         <field name="fecha_fin"/>
                                         </li>
+                                        <li>
+                                        Tareas:
+                                        <field name="task_count"/>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -41,7 +45,7 @@
                 <form string="Sprint" class="o_form_project_tasks">
                     <sheet string="Sprint">
                         <div class="oe_button_box" name="button_box" groups="base.group_user">
-                           <button class="oe_stat_button" type="action"
+                           <button class="oe_stat_button" type="object"
                                 name="tareas_sprint" icon="fa-tasks">
                                 <field string="Tareas" name="task_count" widget="statinfo" options="{'label_field': 'label_tasks'}"/>
                            </button>
