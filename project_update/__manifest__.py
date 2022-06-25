@@ -3,11 +3,11 @@
     'name': "project_update",
 
     'summary': """
-        Texto molon
+        Texto molon de verdad
         """,
 
     'description': """
-        Long description of module's purpose
+        Esto es una extension para el modulo de proyectos
     """,
 
     'author': "Marc Cortadellas",
@@ -20,10 +20,18 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['project'],
+    'depends': ['base','project'],
 
     # always loaded
     'data': [
-        'views/project_view.xml',
-    ],
+        'security/ir.model.access.csv',
+        'views/project_project_view.xml',
+        'views/project_sprint_view.xml',
+        'views/project_task_view.xml',
+        'data/project_task_type_data.xml',
+      ],
+    #     'report/project_report_views.xml','report/project_task_burndown_chart_report_views.xml'
+  #'wizard/reason_delay.xml',
+
+
 }

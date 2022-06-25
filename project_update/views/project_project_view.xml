@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-        <!-- Inherit Form View to Modify it -->
+    <data>
         <record id="edit_project_sprint_management" model="ir.ui.view">
             <field name="name">project.project.form.updateTemplate</field>
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.edit_project"/>
             <field name="arch" type="xml">
                 <field name="user_id" position="after">
-                    <field name = "backup" attrs="{'readonly':[('active','=',False)]}"/>
-                    <field name = "responsableTecnico" attrs="{'readonly':[('active','=',False)]}"/>
+                    <field name="backup" attrs="{'readonly':[('active','=',False)]}"/>
+                    <field name="responsable_tecnico" attrs="{'readonly':[('active','=',False)]}"/>
                 </field>
 
                 <xpath expr="//button[@name='attachment_tree_view']" position="after">
-                    <button type="object"
-                        class="oe_stat_button"
-                        icon="fa-calendar-times-o"
-                        string="Sprints">
-                    </button>
+                    <button type="object" name="sprint_action" class="oe_stat_button" icon="fa-calendar-times-o" string="Sprints" />
                 </xpath>
                 <xpath expr="//button[@name='action_view_all_rating']" position="after">
                     <button type="object"
@@ -25,7 +20,6 @@
                         icon="fa-align-left"
                         string="Gantt">
                     </button>
-
                     <button type="object"
                         class="oe_stat_button"
                         icon="fa-line-chart"
