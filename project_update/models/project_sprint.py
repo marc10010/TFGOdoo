@@ -35,9 +35,8 @@ class ProjectSprint(models.Model):
     horas_planeadas = fields.Float(string="Horas Planeadas", compute ='_compute_planned_hours_count')
     horas_dedicadas = fields.Float(string="Horas Dedicadas", compute ='_compute_completed_hours_count')
     horas_dedicadas_porcentage = fields.Float(string="% Horas Dedicadas", compute = '_compute_progress_hours')
-    desarrollo_porcentage = fields.Float(string="% Desarrollo")
+    desarrollo_porcentage = fields.Float(string="% Desarrollo", compute='_compute_desarrollo_percentage')
     description = fields.Text(translate=True)
-    candidat_age = fields.Integer(String="age")
 
     stage_id = fields.Many2one('crm.stage', string='Stage', ondelete='restrict', tracking=True, index=True, copy=False)
     task_count = fields.Integer(compute='_compute_task_count', string="Task Count")
@@ -74,6 +73,13 @@ class ProjectSprint(models.Model):
 
     def _compute_progress_hours(self):
         self.horas_dedicadas_porcentage = (self.horas_dedicadas / self.horas_planeadas)*100
+
+    def _compute_desarrollo_percentage(self):
+        tasks = self.env['project.task'].search(['|', ('stage_id','=', self.env.ref('project_update.type_inprod').id) ,('stage_id','=', self.env.ref('project_update.type_completed').id ),'&',('project_id','=',self.project_id.id), ('sprint', '=', self.sprint_name) ])
+        suma = 0
+        for task in tasks:
+            suma = suma + task.planned_hours
+        self.desarrollo_porcentage = (suma/self.horas_planeadas)*100
 
 
 

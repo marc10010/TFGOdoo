@@ -31,7 +31,8 @@ class TaskTemplate(models.Model):
             if vals['stage_id'] == 17:
                 vals['sprint'] = False
             else:
-                vals['sprint'] = self.activity_ids.env.context['sprint_name']
+                if 'sprint_name' in self.activity_ids.env.context:
+                    vals['sprint'] = self.activity_ids.env.context['sprint_name']
 
         data=super(TaskTemplate, self).write(vals)
         return data
