@@ -3,13 +3,16 @@
 
     <data noupdate="1">
         <record id="type_backlog" model="project.task.type">
-            <field name="name">Backlog_new</field>
+            <field name="name">Backlog Proyecto</field>
         </record>
-        <record id="type_inprogres" model="project.task.type">
-            <field name="name">In Progress</field>
+        <record id="type_backlog_sprint" model="project.task.type">
+            <field name="name">Backlog Sprint</field>
         </record>
         <record id="type_client" model="project.task.type">
             <field name="name">Pendiente Cliente</field>
+        </record>
+        <record id="type_planning" model="project.task.type">
+            <field name="name">Por Planificar</field>
         </record>
         <record id="type_develop" model="project.task.type">
             <field name="name">Desarrollo</field>

@@ -59,7 +59,6 @@
                         </div>
                         <div class="oe_title pr-0">
                             <h1 class="d-flex flex-row justify-content-between">
-                                <field name="priority" widget="priority" class="mr-3"/>
                                 <field name="sprint_name" class="o_task_name text-truncate" placeholder="Nombre del sprint..." default_focus="1" />
                                 <field name="kanban_state" widget="state_selection" class="ml-auto"/>
                             </h1>
@@ -72,8 +71,8 @@
                             <group>
                                 <field name="fecha_inicio"/>
                                 <field name="fecha_fin"/>
-                                <field name="horas_planeadas"/>
-                                <field name="horas_dedicadas"/>
+                                <field name="horas_planeadas" widget="float_time"/>
+                                <field name="horas_dedicadas" widget="float_time"/>
                                 <field name="horas_dedicadas_porcentage"/>
                                 <field name="desarrollo_porcentage"/>
                             </group>
@@ -122,6 +121,17 @@
             parent="project.menu_main_pm"
             action="project_update.project_update_menu_action"
             sequence="1"/>
+
+        <record id="view_project_sprint_graph" model="ir.ui.view">
+            <field name="name">project.sprint.graph</field>
+            <field name="model">project.sprint</field>
+            <field name="arch" type="xml">
+                <graph string="Project Sprint">
+                    <field name="horas_planeadas"/>
+                    <field name="horas_planeadas"/>
+                </graph>
+            </field>
+        </record>
 
     </data>
 </odoo>

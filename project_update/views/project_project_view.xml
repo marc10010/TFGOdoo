@@ -12,7 +12,9 @@
                 </field>
 
                 <xpath expr="//button[@name='attachment_tree_view']" position="after">
-                    <button type="object" name="sprint_action" class="oe_stat_button" icon="fa-calendar-times-o" string="Sprints" />
+                    <button type="object" name="sprint_action" class="oe_stat_button" icon="fa-calendar-times-o" string="Sprints">
+                        <field string="Sprints" name="sprint_count" icon="statinfo" />
+                    </button>
                 </xpath>
                 <xpath expr="//button[@name='action_view_all_rating']" position="after">
                     <button type="object"
