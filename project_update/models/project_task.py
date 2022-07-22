@@ -13,6 +13,7 @@ class TaskTemplate(models.Model):
     horas_dedicadas_pctg = fields.Integer(string="Horas dedicadas (%)",min=0, max= 10)
     horas_desarrolladas_pctg = fields.Integer(string="Horas desarrollo (%)",min=0, max= 10)
     visible = fields.Boolean(default=False)
+    first_attempt =fields.Boolean(default=False)
     motive_deadline = fields.Selection([('t1', 'Reestructuración proyecto'), ('t2', 'Falta de recursos'), ('t3', 'Replanificación otros proyectos'), ('t4','Falta material'), ('t5', 'falta de comunicación')],
                                        String="Motivo", tracking = True, invisible=True)
 
@@ -20,12 +21,15 @@ class TaskTemplate(models.Model):
     @api.onchange('date_deadline')
     def activar_motivo(self):
         self.motive_deadline = False
-        self.visible = True
+        if self.first_attempt: self.visible = True
+        else: self.first_attempt = True
 
 
     def write(self, vals):
         if 'visible' in vals:
             vals['visible']=False
+        if 'date_deadline' in vals:
+            vals['first_attempt']=True
 
         if 'stage_id' in vals:
             if vals['stage_id'] == 17:

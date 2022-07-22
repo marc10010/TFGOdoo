@@ -13,6 +13,8 @@ class ProjectTemplate(models.Model):
         view_kanban_id = self.env.ref('project_update.sprint_kanban').id
         """ctx opcional"""
         ctx = dict(self.env.context or {})
+        ctx['search_default_project_id'] = self.id
+        ctx['default_project_id'] = self.id
         action = {
             'type': 'ir.actions.act_window',
             'domain': [('project_id', 'in', self.ids)],
@@ -29,13 +31,16 @@ class ProjectTemplate(models.Model):
         project = super(ProjectTemplate, self).create(vals)
 
         project.type_ids = [(4, self.env.ref('project_update.type_backlog').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_inprogres').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_validationpm').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_backlog_sprint').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_client').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_planning').id)]
         project.type_ids = [(4, self.env.ref('project_update.type_develop').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_validationpm').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_validationclient').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_completed').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_inprod').id)]
 
-#        if etapas:
-#            for etapa in etapas:
-#                project.type_ids = [(4, etapa.id)]
+
         return project
 
 
