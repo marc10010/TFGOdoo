@@ -38,20 +38,44 @@ class ProjectSprint(models.Model):
     desarrollo_porcentage = fields.Float(string="% Desarrollo", compute='_compute_desarrollo_percentage')
     description = fields.Text(translate=True)
 
-    stage_id = fields.Many2one('crm.stage', string='Stage', ondelete='restrict', tracking=True, index=True, copy=False)
+    def _get_default_stage_id(self):
+        """ Gives default stage_id """
+        project_id = self.env.context.get('default_project_id')
+        if not project_id:
+            return False
+        return self.stage_find(project_id, [('fold', '=', False)])
+
+
+
+    #stage_id = fields.Many2one('project.sprint.type', string='Stage', ondelete='restrict', tracking = True, index = True, copy = False)
+    #stage_id = fields.Many2one('project.sprint.type', string = 'Stage', ondelete='restrict', tracking=True, index=True, domain="[('project_ids', '=', project_id)]", copy=False)
+    stage_id = fields.Many2one('project.sprint.type', string='Stage', ondelete='restrict', tracking=True, index=True,
+        default=_get_default_stage_id, group_expand='_read_group_stage_ids',
+        domain="[('project_ids', '=', project_id)]", copy=False)
+
     task_count = fields.Integer(compute='_compute_task_count', string="Task Count")
     task_ids = fields.One2many('project.task', 'sprint', string="tasks", context={'active_test': False})
 
+    @api.model
+    def _read_group_stage_ids(self,stages, domain, order):
+        search_domain = [('id', 'in', stages.ids)]
+        if 'default_project_id' in self.env.context:
+            search_domain = ['|', ('project_ids', '=', self.env.context['default_project_id'])] + search_domain
+
+        stage_ids = stages._search(search_domain, order=order)
+        return stages.browse(stage_ids)
+
+
+
     def tareas_sprint(self):
         new_context = dict(self.env.context).copy()
-        #new_context.update( { 'sprint_name' : self.id } )
+        new_context.update( { 'sprint_name' : self.id } )
         ctx = dict(new_context or {})
         ctx['search_default_project_id'] = self.project_id.id
         ctx['default_project_id'] = self.project_id.id
         action ={
             'type': 'ir.actions.act_window',
             'domain': ['|',('stage_id', 'in', self.env.ref('project_update.type_backlog').ids),('sprint','=',self.id)],
-            #'domain': ['&',('project_id', 'in', self.project_id.ids), ('sprint', 'in', self.sprint_name) ],
             #'views': [(view_kanban_id, 'kanban')],
             'view_mode': 'kanban,form,list,graph',
             'name': 'Tareas',
@@ -59,7 +83,6 @@ class ProjectSprint(models.Model):
             'context': ctx
         }
         return action
-
 
     def _compute_task_count(self):
         task_data = self.env['project.task'].read_group(['&', ('project_id', '=', self.project_id.id), ('sprint', 'in', self.project_id.tasks.sprint.ids)], ['sprint'], ['sprint'])
@@ -76,31 +99,33 @@ class ProjectSprint(models.Model):
             task.horas_dedicadas = sum(task.task_ids.mapped('effective_hours'))
 
     def _compute_progress_hours(self):
-        self.horas_dedicadas_porcentage = (self.horas_dedicadas / self.horas_planeadas)*100
+        if self.horas_planeadas > 0: self.horas_dedicadas_porcentage = (self.horas_dedicadas / self.horas_planeadas)*100
+        else: self.horas_dedicadas_porcentage = 0
 
     def _compute_desarrollo_percentage(self):
         tasks = self.env['project.task'].search(['|', ('stage_id','=', self.env.ref('project_update.type_inprod').id) ,('stage_id','=', self.env.ref('project_update.type_completed').id ),'&',('project_id','=',self.project_id.id), ('sprint', '=', self.sprint_name) ])
         suma = 0
         for task in tasks:
             suma = suma + task.planned_hours
-        self.desarrollo_porcentage = (suma/self.horas_planeadas)*100
-
+        if self.horas_planeadas > 0 :self.desarrollo_porcentage = (suma/self.horas_planeadas)*100
+        else: self.desarrollo_porcentage = 0
 
 
     def gantt_sprint(self):
-        new_context = dict(self.env.context).copy()
-        new_context.update( { 'sprint_name' : self.id } )
-        ctx = dict(new_context or {})
-        action ={
+        view_graph_id = self.env.ref('project_update.view_project_sprint_graph').id
+        """ctx opcional"""
+        ctx = dict(self.env.context or {})
+        action = {
             'type': 'ir.actions.act_window',
-            'domain': [ '&',('project_id', 'in', self.project_id.ids), '|', ('sprint', 'in', self.sprint_name),'&', ('stage_id', 'in', self.env.ref('project_update.type_backlog').ids), '|', ('sprint', 'in', self.sprint_name),('sprint', '=',False) ],
-            #'views': [(view_kanban_id, 'kanban')],
-            'view_mode': 'kanban,form,list',
-            'name': 'Tareas',
-            'res_model': 'project.task',
+            'domain': [('project_id', 'in', self.ids)],
+            'views': [(view_graph_id, 'graph')],
+            'view_mode': 'graph',
+            'name': 'Sprints',
+            'res_model': 'project.sprint',
             'context': ctx
         }
         return action
+
 
     def burn_down_chart_sprint(self):
         return self
