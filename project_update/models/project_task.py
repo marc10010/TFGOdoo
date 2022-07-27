@@ -7,13 +7,13 @@ class TaskTemplate(models.Model):
     # default=lambda self: self.env.context.get('active_id')
     sprint = fields.Many2one('project.sprint', string='Sprint',
                              index=True, tracking=True, check_company=True, change_default=True)
-    prioridad = fields.Integer(string="Prioridad",min=0, max= 10)
     #dependencia = fields.Many2one('project.task', string='Dependencias', default=lambda self: self.env.context.get('active_id'), index=True, tracking=True, check_company=True, change_default=True)
-    horas_planeadas = fields.Integer(string="Horas Planeadas",min=0, max= 10)
-    horas_dedicadas = fields.Integer(string="Horas dedidacas",min=0, max= 10)
+    horas_planeadas = fields.Integer(string="Horas Planeadas")
+    horas_dedicadas = fields.Integer(string="Horas dedidacas")
     horas_dedicadas_pctg = fields.Integer(string="Horas dedicadas (%)",min=0, max= 10)
     horas_desarrolladas_pctg = fields.Integer(string="Horas desarrollo (%)",min=0, max= 10)
     visible = fields.Boolean(default=False)
+    first_attempt =fields.Boolean(default=False)
     motive_deadline = fields.Selection([('t1', 'Reestructuración proyecto'), ('t2', 'Falta de recursos'), ('t3', 'Replanificación otros proyectos'), ('t4','Falta material'), ('t5', 'falta de comunicación')],
                                        String="Motivo", tracking = True, invisible=True)
 
@@ -21,18 +21,22 @@ class TaskTemplate(models.Model):
     @api.onchange('date_deadline')
     def activar_motivo(self):
         self.motive_deadline = False
-        self.visible = True
+        if self.first_attempt: self.visible = True
+        else: self.first_attempt = True
 
 
     def write(self, vals):
         if 'visible' in vals:
             vals['visible']=False
+        if 'date_deadline' in vals:
+            vals['first_attempt']=True
 
         if 'stage_id' in vals:
-            if vals['stage_id'] == 17:
+            if vals['stage_id'] == self.env.ref('project_update.type_backlog').id:
                 vals['sprint'] = False
             else:
-                vals['sprint'] = self.activity_ids.env.context['sprint_name']
+                if 'sprint_name' in self.activity_ids.env.context:
+                    vals['sprint'] = self.activity_ids.env.context['sprint_name']
 
         data=super(TaskTemplate, self).write(vals)
         return data

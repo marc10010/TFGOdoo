@@ -29,6 +29,8 @@
         'views/project_sprint_view.xml',
         'views/project_task_view.xml',
         'data/project_task_type_data.xml',
+        'data/project_sprint_type_data.xml',
+        'views/project_sprint_stage_view.xml',
       ],
     #     'report/project_report_views.xml','report/project_task_burndown_chart_report_views.xml'
   #'wizard/reason_delay.xml',
