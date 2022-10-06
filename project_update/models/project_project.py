@@ -3,7 +3,9 @@
 from odoo import fields, models, api
 
 class ProjectTemplate(models.Model):
+
     _inherit = 'project.project'
+
     backup = fields.Many2one('res.users', string='Backup', default=lambda self: self.env.user, tracking=True)
     responsable_tecnico = fields.Many2one('res.users', string='Responsable técnico', default=lambda self: self.env.user, tracking=True)
     sprint_id = fields.One2many('project.sprint', 'sprint_name')
@@ -32,24 +34,24 @@ class ProjectTemplate(models.Model):
     def create(self, vals):
         project = super(ProjectTemplate, self).create(vals)
 
-        ### type_ids = fields.Many2many('project.task.type', 'project_task_type_rel', 'project_id', 'type_id', string='Tasks Stages')
-        project.type_ids = [(4, self.env.ref('project_update.type_backlog').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_backlog_sprint').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_client').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_planning').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_develop').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_epicas').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_estudio').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_analisis').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_diseno').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_pendientecliente').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_planificacion').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_desarrollo').id)]
         project.type_ids = [(4, self.env.ref('project_update.type_validationpm').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_qa').id)]
         project.type_ids = [(4, self.env.ref('project_update.type_validationclient').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_completed').id)]
-        project.type_ids = [(4, self.env.ref('project_update.type_inprod').id)]
+        project.type_ids = [(4, self.env.ref('project_update.type_produccion').id)]
 
-        ## sprint_type_ids = fields.Many2many('project.sprint.type', 'project_sprint_type_rel', 'project_id', 'type_id', string='Sprint Stages')
-        project.sprint_type_ids = [(4, self.env.ref('project_update.type_backlog_1').id)]
-
-
+        project.sprint_type_ids = [(4, self.env.ref('project_update.type_pendienteiniciar_sprint').id)]
+        project.sprint_type_ids = [(4, self.env.ref('project_update.type_desarrollo_sprint').id)]
+        project.sprint_type_ids = [(4, self.env.ref('project_update.type_qa_sprint').id)]
+        project.sprint_type_ids = [(4, self.env.ref('project_update.type_completado_sprint').id)]
 
         return project
-
 
     def _compute_sprint_count(self):
         task_data = self.env['project.sprint'].read_group([ ('project_id', 'in', self.ids)], ['project_id'], ['project_id'])

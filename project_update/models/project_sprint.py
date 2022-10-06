@@ -12,15 +12,12 @@ class ProjectSprint(models.Model):
         ('inProgress', 'In Progress'),
         ('done', 'Done')],
         string= "Estado")
-
-
     active = fields.Boolean(default = True)
-
     kanban_state = fields.Selection([
         ('normal', 'Grey'),
         ('done', 'Green'),
-        ('blocked', 'Red')], string='Kanban State',
-        copy=False, default='normal', required=True)
+        ('blocked', 'Red')], 
+        string='Kanban State', copy=False, default='normal', required=True)
 
     sprint_name = fields.Char(placeholder='Name', index=True, required=True, tracking=True)
 
@@ -40,10 +37,7 @@ class ProjectSprint(models.Model):
 
     def _get_default_stage_id(self):
         """ Gives default stage_id """
-        project_id = self.env.context.get('default_project_id')
-        if not project_id:
-            return False
-        return self.stage_find(project_id, [('fold', '=', False)])
+        return self.env.ref('project_update.type_pendienteiniciar_sprint').id
 
 
 
@@ -75,7 +69,7 @@ class ProjectSprint(models.Model):
         ctx['default_project_id'] = self.project_id.id
         action ={
             'type': 'ir.actions.act_window',
-            'domain': ['|',('stage_id', 'in', self.env.ref('project_update.type_backlog').ids),('sprint','=',self.id)],
+            'domain': ['|',('stage_id', 'in', self.env.ref('project_update.type_epicas').ids),('sprint','=',self.id)],
             #'views': [(view_kanban_id, 'kanban')],
             'view_mode': 'kanban,form,list,graph',
             'name': 'Tareas',
@@ -103,7 +97,7 @@ class ProjectSprint(models.Model):
         else: self.horas_dedicadas_porcentage = 0
 
     def _compute_desarrollo_percentage(self):
-        tasks = self.env['project.task'].search(['|', ('stage_id','=', self.env.ref('project_update.type_inprod').id) ,('stage_id','=', self.env.ref('project_update.type_completed').id ),'&',('project_id','=',self.project_id.id), ('sprint', '=', self.sprint_name) ])
+        tasks = self.env['project.task'].search(['&', ('stage_id','=', self.env.ref('project_update.type_produccion').id),('project_id','=',self.project_id.id), ('sprint', '=', self.sprint_name) ])
         suma = 0
         for task in tasks:
             suma = suma + task.planned_hours
@@ -125,8 +119,16 @@ class ProjectSprint(models.Model):
             'context': ctx
         }
         return action
+    
+    def create(self, vals):
+        if self._context.get('project_id'):
+            vals['project_id']= self._context.get('project_id')
+        return super(ProjectSprint, self).create(vals)
 
-
+    
+    
+    
+    
     def burn_down_chart_sprint(self):
         return self
 
